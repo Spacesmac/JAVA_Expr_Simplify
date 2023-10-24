@@ -1,5 +1,3 @@
-// Définition des classes d'expressions
-
 import java.math.BigDecimal;
 
 interface ArithmeticExpression {
@@ -273,6 +271,16 @@ class Multiplication implements ArithmeticExpression {
                             new Multiplication(rightOperand, new NumericConstant(constant)));
                     return tmp;
                 }
+            } else if (simpleLeft instanceof Subtraction) {
+                ArithmeticExpression rightOperand = ((Subtraction) simpleLeft).getRight();
+                ArithmeticExpression leftOperand = ((Subtraction) simpleLeft).getLeft();
+                if ((leftOperand instanceof NumericConstant || leftOperand instanceof Variable) &&
+                        (rightOperand instanceof NumericConstant || rightOperand instanceof Variable)) {
+                    ArithmeticExpression tmp = new Subtraction(
+                            new Multiplication(leftOperand, new NumericConstant(constant)),
+                            new Multiplication(rightOperand, new NumericConstant(constant)));
+                    return tmp;
+                }
             }
         }
 
@@ -286,6 +294,16 @@ class Multiplication implements ArithmeticExpression {
                     ArithmeticExpression tmp = new Addition(
                             new Multiplication(rightOperand, new NumericConstant(constant)),
                             new Multiplication(leftOperand, new NumericConstant(constant)));
+                    return tmp;
+                }
+            } else if (simpleRight instanceof Subtraction) {
+                ArithmeticExpression rightOperand = ((Subtraction) simpleRight).getRight();
+                ArithmeticExpression leftOperand = ((Subtraction) simpleRight).getLeft();
+                if ((leftOperand instanceof NumericConstant || leftOperand instanceof Variable) &&
+                        (rightOperand instanceof NumericConstant || rightOperand instanceof Variable)) {
+                    ArithmeticExpression tmp = new Subtraction(
+                            new Multiplication(leftOperand, new NumericConstant(constant)),
+                            new Multiplication(rightOperand, new NumericConstant(constant)));
                     return tmp;
                 }
             }
@@ -401,5 +419,33 @@ class Power implements ArithmeticExpression {
     @Override
     public String toString() {
         return "(" + base.toString() + " ^ " + exponent.toString() + ")";
+    }
+}
+
+// Cosinus
+class Cosinus implements ArithmeticExpression {
+    private ArithmeticExpression base;
+
+    public Cosinus(ArithmeticExpression base) {
+        this.base = base;
+    }
+
+    public ArithmeticExpression getbase() {
+        return this.base;
+    }
+
+    @Override
+    public ArithmeticExpression evaluate() {
+        ArithmeticExpression simpleLeft = base.evaluate();
+        if (simpleLeft instanceof NumericConstant) {
+            double result = Math.cos((((NumericConstant) simpleLeft).getValue()));
+            return new NumericConstant(result);
+        }
+        return new Cosinus(simpleLeft);
+    }
+
+    @Override
+    public String toString() {
+        return "cos(" + base.toString() + ")";
     }
 }

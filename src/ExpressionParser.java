@@ -72,6 +72,15 @@ public class ExpressionParser {
                 expression = expression.replace("" + expression.charAt(i) + expression.charAt(i + 1),
                         "" + expression.charAt(i) + '*' + expression.charAt(i + 1));
             }
+            if (expression.charAt(i) >= 'a' && expression.charAt(i) <= 'z' && i + 3 < expression.length()
+                    && expression.substring(i, i + 4).compareTo("cos(") == 0) {
+                i += 3;
+                for (; i < expression.length() && (expression.charAt(i) == '(' || expression.charAt(i) == ')'
+                        || Character.isDigit(expression.charAt(i))); i++)
+                    ;
+                i--;
+                continue;
+            }
             if (expression.charAt(i) >= 'a' && expression.charAt(i) <= 'z' && i + 1 < expression.length()
                     && expression.charAt(i + 1) >= 'a' && expression.charAt(i + 1) <= 'z') {
                 expression = expression.replace("" + expression.charAt(i) + expression.charAt(i + 1),
@@ -101,6 +110,12 @@ public class ExpressionParser {
                 operands.push(new NumericConstant(Double.parseDouble(expression.substring(j, i))));
                 i--;
             } else if (Character.isLetter(content)) {
+                // Add other operands like tan or sin, etc...
+                if (i + 3 < expression.length() && expression.substring(i, i + 3).compareTo("cos") == 0) {
+                    i += 2;
+                    operators.push('c');
+                    continue;
+                }
                 operands.push(new Variable(String.valueOf(content)));
             } else if (content == '(') {
                 operators.push(content);
@@ -112,6 +127,11 @@ public class ExpressionParser {
                     operands.push(createExpression(operator, left, right));
                 }
                 operators.pop();
+                if (operators.peek() == 'c') {
+                    ArithmeticExpression m = operands.pop();
+                    operands.push(new Cosinus(m));
+                    operators.pop();
+                }
             } else if (isOperator(content)) {
                 while (!operators.isEmpty() && getPriority(operators.peek()) >= getPriority(content)) {
                     char operator = operators.pop();
@@ -147,33 +167,25 @@ public class ExpressionParser {
         return null;
     }
 
-    public static void main(String[] args) {
-        try {
-            String expression = "x+5*(y-2)";
-            if (args.length > 0) {
-                expression = args[0];
+    public static String startLoop(String expr) {
+        String simpleString = null;
+        ArithmeticExpression parsedExpression = parse(expr);
+        System.out.println("Parsed Expression: " + parsedExpression.toString());
+        ArithmeticExpression loopExpression = parsedExpression.evaluate();
+        System.out.println("Simple Expression: " + loopExpression.toString());
+        Stack<String> allExpressions = new Stack<>();
+        while (true) {
+            loopExpression = loopExpression.evaluate();
+            if (simpleString != null && (simpleString.equals(loopExpression.toString())
+                    || allExpressions.search(simpleString) < 0)) {
+                break;
             }
-            String simpleString = null;
-            ArithmeticExpression parsedExpression = parse(expression);
-            System.out.println("Parsed Expression: " + parsedExpression.toString());
-            ArithmeticExpression loopExpression = parsedExpression.evaluate();
-            System.out.println("Simple Expression: " + loopExpression.toString());
-            Stack<String> allExpressions = new Stack<>();
-            while (true) {
-                loopExpression = loopExpression.evaluate();
-                if (simpleString != null && (simpleString.equals(loopExpression.toString())
-                        || allExpressions.search(simpleString) < 0)) {
-                    break;
-                }
-                simpleString = loopExpression.toString();
-                allExpressions.push(simpleString);
-                System.out.println("Simplest Expression: " + simpleString);
-            }
-            if (simpleString.charAt(0) == '(' && simpleString.charAt(simpleString.length() - 1) == ')')
-                simpleString = simpleString.substring(1, simpleString.length() - 1);
-            System.out.println("Final result: " + simpleString);
-        } catch (Exception e) {
-            System.out.println("Error: " + e);
+            simpleString = loopExpression.toString();
+            allExpressions.push(simpleString);
+            System.out.println("Simplest Expression: " + simpleString);
         }
+        if (simpleString.charAt(0) == '(' && simpleString.charAt(simpleString.length() - 1) == ')')
+            simpleString = simpleString.substring(1, simpleString.length() - 1);
+        return simpleString;
     }
 }
