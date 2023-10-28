@@ -4,9 +4,13 @@ public class Division implements ArithmeticExpression {
     private ArithmeticExpression left;
     private ArithmeticExpression right;
 
-    public Division(ArithmeticExpression left, ArithmeticExpression right) {
+    private Division(ArithmeticExpression left, ArithmeticExpression right) {
         this.left = left;
         this.right = right;
+    }
+
+    public static ArithmeticExpression create(ArithmeticExpression left, ArithmeticExpression right) {
+        return new Division(left, right);
     }
 
     public ArithmeticExpression getLeft() {
@@ -25,7 +29,7 @@ public class Division implements ArithmeticExpression {
         if (simpleLeft instanceof NumericConstant && simpleRight instanceof NumericConstant) {
             double result = ((NumericConstant) simpleLeft).getValue()
                     / ((NumericConstant) simpleRight).getValue();
-            return new NumericConstant(result);
+            return NumericConstant.create(result);
         }
 
         return new Division(simpleLeft, simpleRight);

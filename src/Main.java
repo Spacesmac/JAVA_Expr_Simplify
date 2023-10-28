@@ -1,13 +1,14 @@
 public class Main {
     public static void main(String[] args) {
         try {
-            String expression = "2+2x+-  cos(4x + 2x)";
+            ExpressionParser parser = new ExpressionParser();
+            String expression = "sin(2+2)+4";
             // expression = "(2+2)/8";
             if (args.length > 0) {
                 expression = args[0];
             }
 
-            String simpleString = ExpressionParser.startLoop(expression);
+            String simpleString = parser.startLoop(expression);
 
             System.out.println("Final result: " + simpleString);
         } catch (Exception e) {

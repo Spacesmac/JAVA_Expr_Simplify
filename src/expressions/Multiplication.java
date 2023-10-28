@@ -4,9 +4,13 @@ public class Multiplication implements ArithmeticExpression {
     private ArithmeticExpression left;
     private ArithmeticExpression right;
 
-    public Multiplication(ArithmeticExpression left, ArithmeticExpression right) {
+    private Multiplication(ArithmeticExpression left, ArithmeticExpression right) {
         this.left = left;
         this.right = right;
+    }
+
+    public static ArithmeticExpression create(ArithmeticExpression left, ArithmeticExpression right) {
+        return new Multiplication(left, right);
     }
 
     public ArithmeticExpression getLeft() {
@@ -25,9 +29,9 @@ public class Multiplication implements ArithmeticExpression {
                 ArithmeticExpression rightOperand = ((Addition) simpleLeft).getRight();
                 if ((leftOperand instanceof NumericConstant || leftOperand instanceof Variable) &&
                         (rightOperand instanceof NumericConstant || rightOperand instanceof Variable)) {
-                    ArithmeticExpression tmp = new Addition(
-                            new Multiplication(leftOperand, new NumericConstant(constant)),
-                            new Multiplication(rightOperand, new NumericConstant(constant)));
+                    ArithmeticExpression tmp = Addition.create(
+                            new Multiplication(leftOperand, NumericConstant.create(constant)),
+                            new Multiplication(rightOperand, NumericConstant.create(constant)));
                     return tmp;
                 }
             } else if (simpleLeft instanceof Subtraction) {
@@ -35,9 +39,9 @@ public class Multiplication implements ArithmeticExpression {
                 ArithmeticExpression leftOperand = ((Subtraction) simpleLeft).getLeft();
                 if ((leftOperand instanceof NumericConstant || leftOperand instanceof Variable) &&
                         (rightOperand instanceof NumericConstant || rightOperand instanceof Variable)) {
-                    ArithmeticExpression tmp = new Subtraction(
-                            new Multiplication(leftOperand, new NumericConstant(constant)),
-                            new Multiplication(rightOperand, new NumericConstant(constant)));
+                    ArithmeticExpression tmp = Subtraction.create(
+                            new Multiplication(leftOperand, NumericConstant.create(constant)),
+                            new Multiplication(rightOperand, NumericConstant.create(constant)));
                     return tmp;
                 }
             }
@@ -50,9 +54,9 @@ public class Multiplication implements ArithmeticExpression {
                 ArithmeticExpression leftOperand = ((Addition) simpleRight).getLeft();
                 if ((leftOperand instanceof NumericConstant || leftOperand instanceof Variable) &&
                         (rightOperand instanceof NumericConstant || rightOperand instanceof Variable)) {
-                    ArithmeticExpression tmp = new Addition(
-                            new Multiplication(rightOperand, new NumericConstant(constant)),
-                            new Multiplication(leftOperand, new NumericConstant(constant)));
+                    ArithmeticExpression tmp = Addition.create(
+                            new Multiplication(rightOperand, NumericConstant.create(constant)),
+                            new Multiplication(leftOperand, NumericConstant.create(constant)));
                     return tmp;
                 }
             } else if (simpleRight instanceof Subtraction) {
@@ -60,9 +64,9 @@ public class Multiplication implements ArithmeticExpression {
                 ArithmeticExpression leftOperand = ((Subtraction) simpleRight).getLeft();
                 if ((leftOperand instanceof NumericConstant || leftOperand instanceof Variable) &&
                         (rightOperand instanceof NumericConstant || rightOperand instanceof Variable)) {
-                    ArithmeticExpression tmp = new Subtraction(
-                            new Multiplication(leftOperand, new NumericConstant(constant)),
-                            new Multiplication(rightOperand, new NumericConstant(constant)));
+                    ArithmeticExpression tmp = Subtraction.create(
+                            new Multiplication(leftOperand, NumericConstant.create(constant)),
+                            new Multiplication(rightOperand, NumericConstant.create(constant)));
                     return tmp;
                 }
             }
@@ -78,7 +82,7 @@ public class Multiplication implements ArithmeticExpression {
         if (simpleLeft instanceof NumericConstant && simpleRight instanceof NumericConstant) {
             double result = ((NumericConstant) simpleLeft).getValue()
                     * ((NumericConstant) simpleRight).getValue();
-            return new NumericConstant(result);
+            return NumericConstant.create(result);
         }
         if (simpleLeft instanceof NumericConstant && simpleRight instanceof Variable) {
             ((Variable) simpleRight).setX_value(((NumericConstant) simpleLeft).getValue()

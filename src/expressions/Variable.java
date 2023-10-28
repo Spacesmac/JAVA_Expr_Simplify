@@ -8,13 +8,17 @@ public class Variable implements ArithmeticExpression {
         return this.name;
     }
 
-    public Variable(String name) {
+    private Variable(String name) {
         this.name = name;
         this.x_value = 1;
     }
 
     double getX_value() {
         return x_value;
+    }
+
+    public static ArithmeticExpression create(String name) {
+        return new Variable(name);
     }
 
     void setX_value(double new_x_value) {

@@ -4,9 +4,13 @@ public class Power implements ArithmeticExpression {
     private ArithmeticExpression base;
     private ArithmeticExpression exponent;
 
-    public Power(ArithmeticExpression base, ArithmeticExpression exponent) {
+    private Power(ArithmeticExpression base, ArithmeticExpression exponent) {
         this.base = base;
         this.exponent = exponent;
+    }
+
+    public static ArithmeticExpression create(ArithmeticExpression left, ArithmeticExpression right) {
+        return new Power(left, right);
     }
 
     public ArithmeticExpression getbase() {
@@ -24,7 +28,7 @@ public class Power implements ArithmeticExpression {
         if (simpleLeft instanceof NumericConstant && simpleRight instanceof NumericConstant) {
             double result = Math.pow(((NumericConstant) simpleLeft).getValue(),
                     ((NumericConstant) simpleRight).getValue());
-            return new NumericConstant(result);
+            return NumericConstant.create(result);
         }
         return new Power(simpleLeft, simpleRight);
     }

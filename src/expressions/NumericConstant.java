@@ -3,8 +3,12 @@ package expressions;
 public class NumericConstant implements ArithmeticExpression {
     private double value;
 
-    public NumericConstant(double value) {
+    private NumericConstant(double value) {
         this.value = value;
+    }
+
+    public static ArithmeticExpression create(double val) {
+        return new NumericConstant(val);
     }
 
     @Override

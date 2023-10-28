@@ -3,30 +3,37 @@ import java.util.Stack;
 import utils.ExpressionUtils;
 import utils.OperatorPriority;
 import expressions.ArithmeticExpression;
-import expressions.*;
+import expressions.factory.ExpressionFactory;
+import expressions.factory.MinimalExpressionFactory;
 
 public class ExpressionParser {
+    ExpressionFactory factory;
 
-    private static ArithmeticExpression createExpression(char operator, ArithmeticExpression left,
+    public ExpressionParser() {
+        this.factory = new MinimalExpressionFactory();
+    }
+
+    private ArithmeticExpression createExpression(char operator, ArithmeticExpression left,
             ArithmeticExpression right) {
         if (operator == '+') {
-            return new Addition(left, right);
+            return factory.createAddition(left, right);
         } else if (operator == '-') {
-            return new Subtraction(left, right);
+            return factory.createSubtraction(left, right);
         } else if (operator == '*') {
-            return new Multiplication(left, right);
+            return factory.createMultiplication(left, right);
         } else if (operator == '/') {
-            return new Division(left, right);
+            return factory.createDivision(left, right);
         } else if (operator == '^') {
-            return new Power(left, right);
+            return factory.createPower(left, right);
         }
         return null;
     }
 
-    public static ArithmeticExpression parse(String expression) {
+    public ArithmeticExpression parse(String expression) {
         Stack<ArithmeticExpression> operands = new Stack<>();
         Stack<Character> operators = new Stack<>();
         expression = ExpressionUtils.emptyUselessOperators(expression);
+
         for (int i = 0; i < expression.length(); i++) {
             char content = expression.charAt(i);
             if (Character.isDigit(content) || (content == '-' && i == 0 && i + 1 < expression.length())) {
@@ -37,35 +44,48 @@ public class ExpressionParser {
                     i++;
                 }
                 double value = Double.parseDouble(expression.substring(j, i));
-                operands.push(new NumericConstant(isNeg ? -value : value));
+                operands.push(factory.createNumericConstant(isNeg ? -value : value));
                 i--;
             } else if (Character.isLetter(content)) {
+                System.out.println(expression);
                 if (i + 3 < expression.length() && expression.substring(i, i + 3).equals("cos")) {
                     i += 2;
                     operators.push('c');
+                } else if (i + 3 < expression.length() && expression.substring(i, i + 3).equals("sin")) {
+                    i += 2;
+                    System.out.println("here");
+                    operators.push('s');
                 } else {
-                    operands.push(new Variable(String.valueOf(content)));
+                    System.out.println("here");
+                    operands.push(factory.createVariable(String.valueOf(content)));
                 }
             } else if (content == '(') {
                 operators.push(content);
             } else if (content == ')') {
                 while (operators.peek() != '(') {
                     char operator = operators.pop();
-                    if (operator == 'c') {
-                        operands.push(new Cosinus(operands.pop()));
-                    } else {
-                        ArithmeticExpression right = operands.pop();
-                        ArithmeticExpression left = operands.pop();
-                        operands.push(createExpression(operator, left, right));
-                    }
+                    ArithmeticExpression right = operands.pop();
+                    ArithmeticExpression left = operands.pop();
+                    operands.push(createExpression(operator, left, right));
+
                 }
                 operators.pop();
+                char op = operators.peek();
+                if (op == 'c') {
+                    operators.pop();
+                    operands.push(factory.createCosinus(operands.pop()));
+                } else if (op == 's') {
+                    operators.pop();
+                    operands.push(factory.createSinus(operands.pop()));
+                }
             } else if (OperatorPriority.isOperator(content)) {
                 while (!operators.isEmpty()
                         && OperatorPriority.getPriority(operators.peek()) >= OperatorPriority.getPriority(content)) {
                     char operator = operators.pop();
                     if (operator == 'c') {
-                        operands.push(new Cosinus(operands.pop()));
+                        operands.push(factory.createCosinus(operands.pop()));
+                    } else if (operator == 's') {
+                        operands.push(factory.createSinus(operands.pop()));
                     } else {
                         ArithmeticExpression right = operands.pop();
                         ArithmeticExpression left = operands.pop();
@@ -78,7 +98,9 @@ public class ExpressionParser {
         while (!operators.isEmpty()) {
             char operator = operators.pop();
             if (operator == 'c') {
-                operands.push(new Cosinus(operands.pop()));
+                operands.push(factory.createCosinus(operands.pop()));
+            } else if (operator == 's') {
+                operands.push(factory.createSinus(operands.pop()));
             } else {
                 ArithmeticExpression right = operands.pop();
                 ArithmeticExpression left = operands.pop();
@@ -88,7 +110,7 @@ public class ExpressionParser {
         return operands.pop();
     }
 
-    public static String startLoop(String expr) {
+    public String startLoop(String expr) {
         String simpleString = null;
         ArithmeticExpression parsedExpression = parse(expr);
         ArithmeticExpression loopExpression = parsedExpression.evaluate();

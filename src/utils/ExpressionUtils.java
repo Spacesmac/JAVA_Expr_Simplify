@@ -20,7 +20,8 @@ public class ExpressionUtils {
                 continue;
             }
             if (expression.charAt(i) >= 'a' && expression.charAt(i) <= 'z' && i + 3 < expression.length()
-                    && expression.substring(i, i + 4).compareTo("cos(") == 0) {
+                    && (expression.substring(i, i + 4).compareTo("cos(") == 0
+                            || expression.substring(i, i + 4).compareTo("sin(") == 0)) {
                 i += 3;
                 for (; i < expression.length() && (expression.charAt(i) == '(' || expression.charAt(i) == ')'
                         || Character.isDigit(expression.charAt(i))); i++) {

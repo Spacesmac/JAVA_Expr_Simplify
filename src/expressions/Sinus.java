@@ -1,14 +1,14 @@
 package expressions;
 
-public class Cosinus implements ArithmeticExpression {
+public class Sinus implements ArithmeticExpression {
     private ArithmeticExpression base;
 
-    private Cosinus(ArithmeticExpression base) {
+    private Sinus(ArithmeticExpression base) {
         this.base = base;
     }
 
     public static ArithmeticExpression create(ArithmeticExpression base) {
-        return new Cosinus(base);
+        return new Sinus(base);
     }
 
     public ArithmeticExpression getbase() {
@@ -20,14 +20,14 @@ public class Cosinus implements ArithmeticExpression {
         ArithmeticExpression simpleLeft = base.evaluate();
         if (simpleLeft instanceof NumericConstant) {
             System.out.println(((NumericConstant) simpleLeft).getValue());
-            double result = Math.cos((((NumericConstant) simpleLeft).getValue()));
+            double result = Math.sin((((NumericConstant) simpleLeft).getValue()));
             return NumericConstant.create(result);
         }
-        return new Cosinus(simpleLeft);
+        return new Sinus(simpleLeft);
     }
 
     @Override
     public String toString() {
-        return "cos(" + base.toString() + ")";
+        return "sin(" + base.toString() + ")";
     }
 }

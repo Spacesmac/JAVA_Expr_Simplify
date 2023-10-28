@@ -6,9 +6,13 @@ public class Addition implements ArithmeticExpression {
     private ArithmeticExpression left;
     private ArithmeticExpression right;
 
-    public Addition(ArithmeticExpression left, ArithmeticExpression right) {
+    private Addition(ArithmeticExpression left, ArithmeticExpression right) {
         this.left = left;
         this.right = right;
+    }
+
+    public static ArithmeticExpression create(ArithmeticExpression left, ArithmeticExpression right) {
+        return new Addition(left, right);
     }
 
     public ArithmeticExpression getLeft() {
@@ -30,7 +34,7 @@ public class Addition implements ArithmeticExpression {
         if (simpleLeft instanceof NumericConstant && simpleRight instanceof NumericConstant) {
             double result = (new BigDecimal("" + ((NumericConstant) simpleLeft).getValue())
                     .add(new BigDecimal("" + ((NumericConstant) simpleRight).getValue())).doubleValue());
-            return new NumericConstant(result);
+            return NumericConstant.create(result);
         }
         if (simpleLeft instanceof Variable && simpleRight instanceof Variable) {
             ((Variable) simpleRight).setX_value((new BigDecimal("" + ((Variable) simpleLeft).getX_value())
