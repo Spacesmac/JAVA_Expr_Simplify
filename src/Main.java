@@ -1,7 +1,7 @@
 public class Main {
     public static void main(String[] args) {
         try {
-            String expression = "2+cos(4)";
+            String expression = "2+2x+-  cos(4x + 2x)";
             // expression = "(2+2)/8";
             if (args.length > 0) {
                 expression = args[0];

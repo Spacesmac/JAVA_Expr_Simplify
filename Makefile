@@ -1,6 +1,8 @@
-SRC=	./src/ArithmeticExpression.java	\
-		./src/ExpressionParser.java	\
+SRC=	./src/ExpressionParser.java	\
 		./src/Main.java	\
+		./src/utils/ExpressionUtils.java	\
+		./src/utils/OperatorPriority.java	\
+		./src/expressions/*	\
 
 NAME=Main
 
