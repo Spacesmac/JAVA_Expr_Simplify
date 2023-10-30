@@ -95,8 +95,12 @@ public class Multiplication implements ArithmeticExpression {
                     * ((Variable) simpleLeft).getX_value());
             return simpleLeft;
         }
-
-        System.out.println(simpleLeft.getClass() + " " + simpleRight.getClass());
+        if (simpleLeft instanceof Variable && simpleRight instanceof Variable
+                && ((Variable) simpleLeft).getName().compareTo(((Variable) simpleRight).getName()) == 0) {
+            ((Variable) simpleRight).setX_value(((Variable) simpleLeft).getX_value()
+                    + ((Variable) simpleRight).getX_value());
+            return Power.create(simpleRight, NumericConstant.create(2));
+        }
 
         ArithmeticExpression res = technicalEvaluate(simpleLeft, simpleRight);
         if (res != null) {

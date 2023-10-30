@@ -2,7 +2,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             ExpressionParser parser = new ExpressionParser();
-            String expression = "sin(2+2)+4";
+            String expression = "3x*x+2x*x";
             // expression = "(2+2)/8";
             if (args.length > 0) {
                 expression = args[0];

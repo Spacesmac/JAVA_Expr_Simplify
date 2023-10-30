@@ -36,7 +36,8 @@ public class Addition implements ArithmeticExpression {
                     .add(new BigDecimal("" + ((NumericConstant) simpleRight).getValue())).doubleValue());
             return NumericConstant.create(result);
         }
-        if (simpleLeft instanceof Variable && simpleRight instanceof Variable) {
+        if (simpleLeft instanceof Variable && simpleRight instanceof Variable
+                && ((Variable) simpleLeft).getName().compareTo(((Variable) simpleRight).getName()) == 0) {
             ((Variable) simpleRight).setX_value((new BigDecimal("" + ((Variable) simpleLeft).getX_value())
                     .add(new BigDecimal("" + ((Variable) simpleRight).getX_value()))).doubleValue());
             return simpleRight;
@@ -69,6 +70,20 @@ public class Addition implements ArithmeticExpression {
                 return new Addition(leftOperand.getLeft(), new Addition(leftOperand.getRight(), simpleRight));
             } else if (leftOperand.getLeft() instanceof Variable) {
                 return new Addition(leftOperand.getRight(), new Addition(leftOperand.getLeft(), simpleRight));
+            }
+        }
+        if (simpleLeft instanceof Power && simpleRight instanceof Power) {
+            Power leftPow = ((Power) simpleLeft);
+            Power rightPow = ((Power) simpleRight);
+            if (leftPow.getbase() instanceof Variable && rightPow.getbase() instanceof Variable
+                    && ((Variable) leftPow.getbase()).getName()
+                            .compareTo(((Variable) rightPow.getbase()).getName()) == 0) {
+                if (leftPow.getExponent() instanceof NumericConstant
+                        && rightPow.getExponent() instanceof NumericConstant
+                        && ((NumericConstant) leftPow.getExponent())
+                                .getValue() == ((NumericConstant) leftPow.getExponent()).getValue()) {
+                    return Power.create(new Addition(leftPow.getbase(), rightPow.getbase()), leftPow.getExponent());
+                }
             }
         }
         return new Addition(simpleLeft, simpleRight);

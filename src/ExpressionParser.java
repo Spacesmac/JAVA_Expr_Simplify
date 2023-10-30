@@ -47,16 +47,13 @@ public class ExpressionParser {
                 operands.push(factory.createNumericConstant(isNeg ? -value : value));
                 i--;
             } else if (Character.isLetter(content)) {
-                System.out.println(expression);
                 if (i + 3 < expression.length() && expression.substring(i, i + 3).equals("cos")) {
                     i += 2;
                     operators.push('c');
                 } else if (i + 3 < expression.length() && expression.substring(i, i + 3).equals("sin")) {
                     i += 2;
-                    System.out.println("here");
                     operators.push('s');
                 } else {
-                    System.out.println("here");
                     operands.push(factory.createVariable(String.valueOf(content)));
                 }
             } else if (content == '(') {

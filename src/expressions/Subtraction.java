@@ -29,7 +29,8 @@ public class Subtraction implements ArithmeticExpression {
                     .subtract(new BigDecimal("" + ((NumericConstant) simpleRight).getValue())).doubleValue());
             return NumericConstant.create(result);
         }
-        if (simpleLeft instanceof Variable && simpleRight instanceof Variable) {
+        if (simpleLeft instanceof Variable && simpleRight instanceof Variable
+                && ((Variable) simpleLeft).getName().compareTo(((Variable) simpleRight).getName()) == 0) {
             ((Variable) simpleRight).setX_value((new BigDecimal("" + ((Variable) simpleLeft).getX_value())
                     .subtract(new BigDecimal("" + ((Variable) simpleRight).getX_value()))).doubleValue());
             if (((Variable) simpleRight).getX_value() == 0) {
@@ -45,7 +46,6 @@ public class Subtraction implements ArithmeticExpression {
         ArithmeticExpression simpleLeft = left.evaluate();
         ArithmeticExpression simpleRight = right.evaluate();
         ArithmeticExpression res = simpleEvaluate(simpleLeft, simpleRight);
-        // System.out.println(simpleLeft.getClass() + " " + simpleRight.getClass());
         if (res != null)
             return res;
         if (simpleLeft instanceof Addition && simpleRight instanceof NumericConstant) {

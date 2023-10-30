@@ -19,7 +19,6 @@ public class Sinus implements ArithmeticExpression {
     public ArithmeticExpression evaluate() {
         ArithmeticExpression simpleLeft = base.evaluate();
         if (simpleLeft instanceof NumericConstant) {
-            System.out.println(((NumericConstant) simpleLeft).getValue());
             double result = Math.sin((((NumericConstant) simpleLeft).getValue()));
             return NumericConstant.create(result);
         }
