@@ -33,7 +33,6 @@ public class ExpressionParser {
         Stack<ArithmeticExpression> operands = new Stack<>();
         Stack<Character> operators = new Stack<>();
         expression = ExpressionUtils.emptyUselessOperators(expression);
-
         for (int i = 0; i < expression.length(); i++) {
             char content = expression.charAt(i);
             if (Character.isDigit(content) || (content == '-' && i == 0 && i + 1 < expression.length())) {
