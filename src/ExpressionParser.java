@@ -30,9 +30,8 @@ public class ExpressionParser {
             else if (OperatorPriority.isOperator(content))
                 handler.handleOperator(operands, operators, content);
         }
-        while (!operators.isEmpty()) {
+        while (!operators.isEmpty())
             handler.handleRemainingOperators(operands, operators);
-        }
         return operands.pop();
     }
 

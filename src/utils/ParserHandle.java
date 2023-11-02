@@ -36,6 +36,7 @@ public class ParserHandle {
     public void handleVariable(Stack<ArithmeticExpression> operands, char content) {
         operands.push(factory.createVariable(String.valueOf(content)));
     }
+
     public int handleIsNumber(int i, String  expression, Stack<ArithmeticExpression> operands, Stack<Character> operators, char content) {
         int j = i;
         boolean isNeg = (content == '-');
@@ -46,6 +47,7 @@ public class ParserHandle {
         i--;
         return i;
     }
+
     public int handleIsLetter(int i, String  expression, Stack<ArithmeticExpression> operands, Stack<Character> operators, char content) {
         if (i + 3 < expression.length() && expression.substring(i, i + 3).equals("cos")) {
             i += 2;
