@@ -35,8 +35,18 @@ public class Division implements ArithmeticExpression {
         return new Division(simpleLeft, simpleRight);
     }
 
+    public StringBuilder toStringBuilder() {
+        StringBuilder str = new StringBuilder();
+        str.append('(');
+        str.append(left.toStringBuilder());
+        str.append(" / ");
+        str.append(right.toStringBuilder());
+        str.append(')');
+        return str;
+    }
+
     @Override
     public String toString() {
-        return "(" + left.toString() + " / " + right.toString() + ")";
+        return toStringBuilder().toString();
     }
 }

@@ -33,8 +33,18 @@ public class Power implements ArithmeticExpression {
         return new Power(simpleLeft, simpleRight);
     }
 
+    public StringBuilder toStringBuilder() {
+        StringBuilder str = new StringBuilder();
+        str.append('(');
+        str.append(base.toStringBuilder());
+        str.append(" ^ ");
+        str.append(exponent.toStringBuilder());
+        str.append(')');
+        return str;
+    }
+
     @Override
     public String toString() {
-        return "(" + base.toString() + " ^ " + exponent.toString() + ")";
+        return toStringBuilder().toString();
     }
 }

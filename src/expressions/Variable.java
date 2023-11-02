@@ -30,17 +30,27 @@ public class Variable implements ArithmeticExpression {
         return this;
     }
 
-    @Override
-    public String toString() {
+    public StringBuilder toStringBuilder() {
+        StringBuilder str = new StringBuilder();
         if (x_value == 0) {
-            return "";
+            return str;
         }
         if (x_value != 1) {
             if (x_value == (int) x_value) {
-                return ((int) x_value) + name;
+                str.append((int) x_value);
+                str.append(name);
+            } else {
+                str.append(x_value);
+                str.append(name);
             }
-            return x_value + name;
+            return str;
         }
-        return name;
+        str.append(name);
+        return str;
+    }
+
+    @Override
+    public String toString() {
+        return toStringBuilder().toString();
     }
 }

@@ -1,9 +1,9 @@
 SRC=	./src/ExpressionParser.java	\
 		./src/Main.java	\
-		./src/utils/ExpressionUtils.java	\
-		./src/utils/OperatorPriority.java	\
+		./src/utils/*.java	\
 		./src/expressions/*.java	\
 		./src/expressions/factory/*.java	\
+		./src/expressions/utils/*.java	\
 
 NAME=Main
 

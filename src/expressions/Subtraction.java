@@ -24,13 +24,12 @@ public class Subtraction implements ArithmeticExpression {
     }
 
     ArithmeticExpression simpleEvaluate(ArithmeticExpression simpleLeft, ArithmeticExpression simpleRight) {
-        if (simpleLeft instanceof NumericConstant && simpleRight instanceof NumericConstant) {
+        if (cond.isTwoNumericConstant(simpleLeft, simpleRight)) {
             double result = (new BigDecimal("" + ((NumericConstant) simpleLeft).getValue())
                     .subtract(new BigDecimal("" + ((NumericConstant) simpleRight).getValue())).doubleValue());
             return NumericConstant.create(result);
         }
-        if (simpleLeft instanceof Variable && simpleRight instanceof Variable
-                && ((Variable) simpleLeft).getName().compareTo(((Variable) simpleRight).getName()) == 0) {
+        if (cond.isSameName(simpleLeft, simpleRight)) {
             ((Variable) simpleRight).setX_value((new BigDecimal("" + ((Variable) simpleLeft).getX_value())
                     .subtract(new BigDecimal("" + ((Variable) simpleRight).getX_value()))).doubleValue());
             if (((Variable) simpleRight).getX_value() == 0) {
@@ -48,46 +47,53 @@ public class Subtraction implements ArithmeticExpression {
         ArithmeticExpression res = simpleEvaluate(simpleLeft, simpleRight);
         if (res != null)
             return res;
-        if (simpleLeft instanceof Addition && simpleRight instanceof NumericConstant) {
+        if (cond.isOneAdditionandOneNum(simpleLeft, simpleRight)) {
             Addition leftOperand = ((Addition) simpleLeft);
-            if (leftOperand.getRight() instanceof NumericConstant) {
+            if (cond.isNumeric(leftOperand.getRight())) {
                 return Addition.create(leftOperand.getLeft(), new Subtraction(leftOperand.getRight(), simpleRight));
-            } else if (leftOperand.getLeft() instanceof NumericConstant) {
+            } else if (cond.isNumeric(leftOperand.getLeft())) {
                 return Addition.create(leftOperand.getRight(), new Subtraction(leftOperand.getLeft(), simpleRight));
             }
         }
-        if (simpleLeft instanceof Addition && simpleRight instanceof Variable) {
+        if (cond.isOneAdditionandOneVar(simpleLeft, simpleRight)) {
             Addition leftOperand = ((Addition) simpleLeft);
-            if (leftOperand.getRight() instanceof Variable) {
+            if (cond.isVariable(leftOperand.getRight())) {
                 return Addition.create(leftOperand.getLeft(), new Subtraction(leftOperand.getRight(), simpleRight));
-            } else if (leftOperand.getLeft() instanceof Variable) {
+            } else if (cond.isVariable(leftOperand.getLeft())) {
                 return Addition.create(leftOperand.getRight(), new Subtraction(leftOperand.getLeft(), simpleRight));
             }
         }
-        if (simpleLeft instanceof Subtraction && simpleRight instanceof NumericConstant) {
+        if (cond.isOneSubtractionandOneNum(simpleLeft, simpleRight)) {
             Subtraction leftOperand = ((Subtraction) simpleLeft);
-            if (leftOperand.getRight() instanceof NumericConstant) {
+            if (cond.isNumeric(leftOperand.getRight())) {
                 return new Subtraction(leftOperand.getLeft(), new Subtraction(leftOperand.getRight(), simpleRight));
-            } else if (leftOperand.getLeft() instanceof NumericConstant) {
+            } else if (cond.isNumeric(leftOperand.getLeft())) {
                 return new Subtraction(leftOperand.getRight(), new Subtraction(leftOperand.getLeft(), simpleRight));
             }
         }
-        if (simpleLeft instanceof Subtraction && simpleRight instanceof Variable) {
+        if (cond.isOneSubtractionandOneVar(simpleLeft, simpleRight)) {
             Subtraction leftOperand = ((Subtraction) simpleLeft);
-            if (leftOperand.getRight() instanceof Variable) {
+            if (cond.isVariable(leftOperand.getRight())) {
                 return new Subtraction(leftOperand.getLeft(), new Subtraction(leftOperand.getRight(), simpleRight));
-            } else if (leftOperand.getLeft() instanceof Variable) {
+            } else if (cond.isVariable(leftOperand.getLeft())) {
                 return new Subtraction(leftOperand.getRight(), new Subtraction(leftOperand.getLeft(), simpleRight));
             }
         }
         return new Subtraction(simpleLeft, simpleRight);
     }
 
+    public StringBuilder toStringBuilder() {
+        StringBuilder str = new StringBuilder();
+        str.append('(');
+        str.append(left.toStringBuilder());
+        str.append(" - ");
+        str.append(right.toStringBuilder());
+        str.append(')');
+        return str;
+    }
+
     @Override
     public String toString() {
-        String leftString = left.toString();
-        String rightString = right.toString();
-
-        return "(" + leftString + " - " + rightString + ")";
+        return toStringBuilder().toString();
     }
 }

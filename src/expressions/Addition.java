@@ -24,20 +24,18 @@ public class Addition implements ArithmeticExpression {
     }
 
     ArithmeticExpression simpleEvaluate(ArithmeticExpression simpleLeft, ArithmeticExpression simpleRight) {
-
-        if (simpleLeft instanceof NumericConstant && ((NumericConstant) simpleLeft).getValue() == 0) {
+        if (cond.isNumeric(simpleLeft) && ((NumericConstant) simpleLeft).getValue() == 0) {
             return simpleRight;
         }
-        if (simpleRight instanceof NumericConstant && ((NumericConstant) simpleRight).getValue() == 0) {
+        if (cond.isNumeric(simpleRight) && ((NumericConstant) simpleRight).getValue() == 0) {
             return simpleLeft;
         }
-        if (simpleLeft instanceof NumericConstant && simpleRight instanceof NumericConstant) {
+        if (cond.isTwoNumericConstant(simpleLeft, simpleRight)) {
             double result = (new BigDecimal("" + ((NumericConstant) simpleLeft).getValue())
                     .add(new BigDecimal("" + ((NumericConstant) simpleRight).getValue())).doubleValue());
             return NumericConstant.create(result);
         }
-        if (simpleLeft instanceof Variable && simpleRight instanceof Variable
-                && ((Variable) simpleLeft).getName().compareTo(((Variable) simpleRight).getName()) == 0) {
+        if (cond.isSameName(simpleLeft, simpleRight)) {
             ((Variable) simpleRight).setX_value((new BigDecimal("" + ((Variable) simpleLeft).getX_value())
                     .add(new BigDecimal("" + ((Variable) simpleRight).getX_value()))).doubleValue());
             return simpleRight;
@@ -56,45 +54,46 @@ public class Addition implements ArithmeticExpression {
         res = simpleEvaluate(simpleRight, simpleLeft);
         if (res != null)
             return res;
-        if (simpleLeft instanceof Addition && simpleRight instanceof NumericConstant) {
+        if (cond.isOneAdditionandOneNum(simpleLeft, simpleRight)) {
             Addition leftOperand = ((Addition) simpleLeft);
-            if (leftOperand.getRight() instanceof NumericConstant) {
+            if (cond.isNumeric(leftOperand.getRight())) {
                 return new Addition(leftOperand.getLeft(), new Addition(leftOperand.getRight(), simpleRight));
-            } else if (leftOperand.getLeft() instanceof NumericConstant) {
+            } else if (cond.isNumeric(leftOperand.getLeft())) {
                 return new Addition(leftOperand.getRight(), new Addition(leftOperand.getLeft(), simpleRight));
             }
         }
-        if (simpleLeft instanceof Addition && simpleRight instanceof Variable) {
+        if (cond.isOneAdditionandOneVar(simpleLeft, simpleRight)) {
             Addition leftOperand = ((Addition) simpleLeft);
-            if (leftOperand.getRight() instanceof Variable) {
+            if (cond.isVariable(leftOperand.getRight())) {
                 return new Addition(leftOperand.getLeft(), new Addition(leftOperand.getRight(), simpleRight));
-            } else if (leftOperand.getLeft() instanceof Variable) {
+            } else if (cond.isVariable(leftOperand.getLeft())) {
                 return new Addition(leftOperand.getRight(), new Addition(leftOperand.getLeft(), simpleRight));
             }
         }
-        if (simpleLeft instanceof Power && simpleRight instanceof Power) {
+        if (cond.isTwoPower(simpleLeft, simpleRight)) {
             Power leftPow = ((Power) simpleLeft);
             Power rightPow = ((Power) simpleRight);
-            if (leftPow.getbase() instanceof Variable && rightPow.getbase() instanceof Variable
-                    && ((Variable) leftPow.getbase()).getName()
-                            .compareTo(((Variable) rightPow.getbase()).getName()) == 0) {
-                if (leftPow.getExponent() instanceof NumericConstant
-                        && rightPow.getExponent() instanceof NumericConstant
-                        && ((NumericConstant) leftPow.getExponent())
-                                .getValue() == ((NumericConstant) leftPow.getExponent()).getValue()) {
-                    return Power.create(new Addition(leftPow.getbase(), rightPow.getbase()), leftPow.getExponent());
-                }
+            if (cond.isSameName(leftPow.getbase(), rightPow.getbase())
+                    && cond.isSameValue(leftPow.getExponent(), rightPow.getExponent())) {
+                return Power.create(new Addition(leftPow.getbase(), rightPow.getbase()), leftPow.getExponent());
             }
         }
         return new Addition(simpleLeft, simpleRight);
 
     }
 
+    public StringBuilder toStringBuilder() {
+        StringBuilder str = new StringBuilder();
+        str.append('(');
+        str.append(left.toStringBuilder());
+        str.append(" + ");
+        str.append(right.toStringBuilder());
+        str.append(')');
+        return str;
+    }
+
     @Override
     public String toString() {
-        String leftString = left.toString();
-        String rightString = right.toString();
-
-        return "(" + leftString + " + " + rightString + ")";
+        return toStringBuilder().toString();
     }
 }

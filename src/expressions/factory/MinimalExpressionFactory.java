@@ -47,4 +47,12 @@ public class MinimalExpressionFactory implements ExpressionFactory {
     public ArithmeticExpression createSinus(ArithmeticExpression base) {
         return Sinus.create(base);
     }
+
+    public ArithmeticExpression createFunction(Character c, ArithmeticExpression value) {
+        if (c == 'c')
+            return createCosinus(value);
+        if (c == 's')
+            return createSinus(value);
+        return value;
+    }
 }

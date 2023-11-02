@@ -25,8 +25,16 @@ public class Sinus implements ArithmeticExpression {
         return new Sinus(simpleLeft);
     }
 
+    public StringBuilder toStringBuilder() {
+        StringBuilder str = new StringBuilder();
+        str.append("sin(");
+        str.append(base);
+        str.append(')');
+        return str;
+    }
+
     @Override
     public String toString() {
-        return "sin(" + base.toString() + ")";
+        return toStringBuilder().toString();
     }
 }

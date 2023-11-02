@@ -20,4 +20,6 @@ public interface ExpressionFactory {
     ArithmeticExpression createCosinus(ArithmeticExpression base);
 
     ArithmeticExpression createSinus(ArithmeticExpression base);
+
+    ArithmeticExpression createFunction(Character c, ArithmeticExpression value);
 }

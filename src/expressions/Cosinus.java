@@ -25,8 +25,16 @@ public class Cosinus implements ArithmeticExpression {
         return new Cosinus(simpleLeft);
     }
 
+    public StringBuilder toStringBuilder() {
+        StringBuilder str = new StringBuilder();
+        str.append("cos(");
+        str.append(base);
+        str.append(')');
+        return str;
+    }
+
     @Override
     public String toString() {
-        return "cos(" + base.toString() + ")";
+        return toStringBuilder().toString();
     }
 }
