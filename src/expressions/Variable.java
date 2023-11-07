@@ -10,7 +10,12 @@ public class Variable implements ArithmeticExpression {
 
     private Variable(String name) {
         this.name = name;
-        this.x_value = 1;
+        x_value = 1;
+    }
+
+    private Variable(String name, double val) {
+        this.name = name;
+        x_value = val;
     }
 
     double getX_value() {
@@ -20,9 +25,13 @@ public class Variable implements ArithmeticExpression {
     public static ArithmeticExpression create(String name) {
         return new Variable(name);
     }
+    public static ArithmeticExpression create(String name, double value) {
+        return new Variable(name, value);
+    }
 
-    void setX_value(double new_x_value) {
+    public ArithmeticExpression setX_value(double new_x_value) {
         x_value = new_x_value;
+        return this;
     }
 
     @Override

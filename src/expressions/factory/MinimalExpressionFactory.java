@@ -4,8 +4,8 @@ import expressions.*;
 
 public class MinimalExpressionFactory implements ExpressionFactory {
     @Override
-    public ArithmeticExpression createVariable(String name) {
-        return Variable.create(name);
+    public ArithmeticExpression createVariable(String name, double value) {
+        return Variable.create(name, value);
     }
 
     @Override

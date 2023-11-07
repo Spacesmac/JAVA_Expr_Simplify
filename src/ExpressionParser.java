@@ -42,6 +42,8 @@ public class ExpressionParser {
         ArithmeticExpression parsedExpression = parse(expr);
         ArithmeticExpression loopExpression = parsedExpression.evaluate();
         Stack<String> allExpressions = new Stack<>();
+        if (expr.chars().filter(ch->ch == '(').count() != expr.chars().filter(ch->ch == ')').count())
+            return "Error: Missing parenthesis";
         while (true) {
             loopExpression = loopExpression.evaluate();
             if (simpleString != null && (simpleString.equals(loopExpression.toString()) || allExpressions.search(simpleString) < 0))

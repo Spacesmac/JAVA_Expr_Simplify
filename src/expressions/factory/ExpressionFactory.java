@@ -3,7 +3,7 @@ package expressions.factory;
 import expressions.ArithmeticExpression;
 
 public interface ExpressionFactory {
-    ArithmeticExpression createVariable(String name);
+    ArithmeticExpression createVariable(String name, double value);
 
     ArithmeticExpression createNumericConstant(double value);
 

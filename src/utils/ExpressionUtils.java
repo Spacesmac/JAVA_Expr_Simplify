@@ -12,16 +12,19 @@ public class ExpressionUtils {
             expression = expression.replace("-+", "-");
             expression = expression.replace("++", "+");
             expression = expression.replace("*+", "*");
-            if (expression.charAt(i) >= '0' && expression.charAt(i) <= '9' && i + 1 < expression.length()
-                    && expression.charAt(i + 1) >= 'a' && expression.charAt(i + 1) <= 'z') {
-                expression = expression.replace("" + expression.charAt(i) +
-                        expression.charAt(i + 1),
-                        "" + expression.charAt(i) + '*' + expression.charAt(i + 1));
-                i += 2;
-                continue;
-            }
+            // System.out.println(expression.charAt(i)+"  "+expression.charAt(i+1));
+            // if (expression.charAt(i) >= '0' && expression.charAt(i) <= '9' && i + 1 < expression.length()
+            //         && expression.charAt(i + 1) >= 'a' && expression.charAt(i + 1) <= 'z') {
+            //     expression = expression.replace("" + expression.charAt(i) +
+            //             expression.charAt(i + 1),
+            //             "" + expression.charAt(i) + '*' + expression.charAt(i + 1));
+            //     i++;
+            //     continue;
+            // }
             
             if ((Character.isDigit(expression.charAt(i)) || Character.isLetter(expression.charAt(i))) && i + 1 < expression.length() && expression.charAt(i+1) == '(')
+                expression = expression.replace("" + expression.charAt(i)+expression.charAt(i+1), "" + expression.charAt(i)+'*'+expression.charAt(i+1));
+            if (expression.charAt(i) == ')' && i + 1 < expression.length() && (Character.isDigit(expression.charAt(i+1)) || Character.isLetter(expression.charAt(i+1))))
                 expression = expression.replace("" + expression.charAt(i)+expression.charAt(i+1), "" + expression.charAt(i)+'*'+expression.charAt(i+1));
             if (expression.charAt(i) >= 'a' && expression.charAt(i) <= 'z' && i + 3 < expression.length()
             && (expression.substring(i, i + 4).compareTo("cos(") == 0

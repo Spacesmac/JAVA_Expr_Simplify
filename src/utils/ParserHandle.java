@@ -33,8 +33,8 @@ public class ParserHandle {
         operands.push(factory.createNumericConstant(value));
     }
 
-    public void handleVariable(Stack<ArithmeticExpression> operands, char content) {
-        operands.push(factory.createVariable(String.valueOf(content)));
+    public void handleVariable(Stack<ArithmeticExpression> operands, char content, double value) {
+        operands.push(factory.createVariable(String.valueOf(content), value));
     }
 
     public int handleIsNumber(int i, String  expression, Stack<ArithmeticExpression> operands, Stack<Character> operators, char content) {
@@ -44,6 +44,10 @@ public class ParserHandle {
             i++;
         while (i < expression.length() && (Character.isDigit(expression.charAt(i)) || expression.charAt(i) == '.')) {
             i++;
+        }
+        if (i < expression.length() && Character.isLetter(expression.charAt(i)) && expression.charAt(i) != 'c' && expression.charAt(i) !='s') {
+            handleVariable(operands, expression.charAt(i), Double.parseDouble(expression.substring(j, i)));
+            return i;
         }
         handleNumericConstant(expression.substring(j, i), operands);
         i--;
@@ -58,7 +62,7 @@ public class ParserHandle {
             i += 2;
             operators.push('s');
         } else
-            handleVariable(operands, content);
+            handleVariable(operands, content, 1);
         return i;
     }
 

@@ -22,16 +22,19 @@ public class Multiplication implements ArithmeticExpression {
     }
 
     private ArithmeticExpression technicalEvaluate(ArithmeticExpression simpleLeft, ArithmeticExpression simpleRight) {
-        if (cond.isNumeric(simpleRight)) {
-            double constant = ((NumericConstant) simpleRight).getValue();
+        if (cond.isNumeric(simpleRight) || cond.isVariable(simpleRight)) {
             if (simpleLeft instanceof Addition) {
                 ArithmeticExpression leftOperand = ((Addition) simpleLeft).getLeft();
                 ArithmeticExpression rightOperand = ((Addition) simpleLeft).getRight();
                 if ((cond.isNumeric(leftOperand) || cond.isVariable(leftOperand)) &&
                         (cond.isNumeric(rightOperand) || cond.isVariable(rightOperand))) {
                     ArithmeticExpression tmp = Addition.create(
-                            new Multiplication(leftOperand, NumericConstant.create(constant)),
-                            new Multiplication(rightOperand, NumericConstant.create(constant)));
+                            new Multiplication(leftOperand, cond.isNumeric(simpleLeft) 
+                                ? NumericConstant.create(((NumericConstant) simpleRight).getValue())
+                                : Variable.create(((Variable) simpleRight).getName(), ((Variable) simpleRight).getX_value())),
+                            new Multiplication(rightOperand, cond.isNumeric(simpleLeft)
+                                ? NumericConstant.create(((NumericConstant) simpleRight).getValue())
+                                : Variable.create(((Variable) simpleRight).getName(), ((Variable) simpleRight).getX_value())));
                     return tmp;
                 }
             } else if (simpleLeft instanceof Subtraction) {
@@ -40,23 +43,30 @@ public class Multiplication implements ArithmeticExpression {
                 if ((cond.isNumeric(leftOperand) || cond.isVariable(leftOperand)) &&
                         (cond.isNumeric(rightOperand) || cond.isVariable(rightOperand))) {
                     ArithmeticExpression tmp = Subtraction.create(
-                            new Multiplication(leftOperand, NumericConstant.create(constant)),
-                            new Multiplication(rightOperand, NumericConstant.create(constant)));
+                            new Multiplication(leftOperand, cond.isNumeric(simpleLeft)
+                            ? NumericConstant.create(((NumericConstant) simpleRight).getValue())
+                            : Variable.create(((Variable) simpleRight).getName(), ((Variable) simpleRight).getX_value())),
+                            new Multiplication(rightOperand, cond.isNumeric(simpleLeft)
+                            ? NumericConstant.create(((NumericConstant) simpleRight).getValue())
+                            : Variable.create(((Variable) simpleRight).getName(), ((Variable) simpleRight).getX_value())));
                     return tmp;
                 }
             }
         }
 
-        if (cond.isNumeric(simpleLeft)) {
-            double constant = ((NumericConstant) simpleLeft).getValue();
+        if (cond.isNumeric(simpleLeft) || cond.isVariable(simpleLeft)) {
             if (simpleRight instanceof Addition) {
                 ArithmeticExpression rightOperand = ((Addition) simpleRight).getRight();
                 ArithmeticExpression leftOperand = ((Addition) simpleRight).getLeft();
                 if ((cond.isNumeric(leftOperand) || cond.isVariable(leftOperand)) &&
                         (cond.isNumeric(rightOperand) || cond.isVariable(rightOperand))) {
                     ArithmeticExpression tmp = Addition.create(
-                            new Multiplication(rightOperand, NumericConstant.create(constant)),
-                            new Multiplication(leftOperand, NumericConstant.create(constant)));
+                            new Multiplication(rightOperand, cond.isNumeric(simpleLeft)
+                                ? NumericConstant.create(((NumericConstant) simpleLeft).getValue())
+                                : Variable.create(((Variable) simpleLeft).getName(), ((Variable) simpleLeft).getX_value())),
+                            new Multiplication(leftOperand, cond.isNumeric(simpleLeft)
+                                ? NumericConstant.create(((NumericConstant) simpleLeft).getValue())
+                                : Variable.create(((Variable) simpleLeft).getName(), ((Variable) simpleLeft).getX_value())));
                     return tmp;
                 }
             } else if (simpleRight instanceof Subtraction) {
@@ -65,8 +75,8 @@ public class Multiplication implements ArithmeticExpression {
                 if ((cond.isNumeric(leftOperand) || cond.isVariable(leftOperand)) &&
                         (cond.isNumeric(rightOperand) || cond.isVariable(rightOperand))) {
                     ArithmeticExpression tmp = Subtraction.create(
-                            new Multiplication(leftOperand, NumericConstant.create(constant)),
-                            new Multiplication(rightOperand, NumericConstant.create(constant)));
+                            new Multiplication(leftOperand, cond.isNumeric(simpleLeft) ? NumericConstant.create(((NumericConstant) simpleLeft).getValue()): Variable.create(((Variable) simpleLeft).getName(), ((Variable) simpleLeft).getX_value())),
+                            new Multiplication(rightOperand, cond.isNumeric(simpleLeft) ? NumericConstant.create(((NumericConstant) simpleLeft).getValue()): Variable.create(((Variable) simpleLeft).getName(), ((Variable) simpleLeft).getX_value())));
                     return tmp;
                 }
             }
@@ -85,6 +95,7 @@ public class Multiplication implements ArithmeticExpression {
             return NumericConstant.create(result);
         }
         if (cond.isVariable(simpleRight) && cond.isOneVarAndOneNum(simpleLeft, simpleRight)) {
+            
             ((Variable) simpleRight).setX_value(((NumericConstant) simpleLeft).getValue()
                     * ((Variable) simpleRight).getX_value());
             return simpleRight;
@@ -95,7 +106,7 @@ public class Multiplication implements ArithmeticExpression {
             return simpleLeft;
         }
         if (cond.isSameName(simpleLeft, simpleRight)) {
-            ((Variable) simpleRight).setX_value(((Variable) simpleLeft).getX_value()
+            simpleRight = ((Variable) simpleRight).setX_value(((Variable) simpleLeft).getX_value()
                     + ((Variable) simpleRight).getX_value());
             return Power.create(simpleRight, NumericConstant.create(2));
         }
