@@ -1,7 +1,7 @@
 package expressions;
 
 public class NumericConstant implements ArithmeticExpression {
-    private double value;
+    private final double value;
 
     private NumericConstant(double value) {
         this.value = value;

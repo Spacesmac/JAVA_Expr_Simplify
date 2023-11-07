@@ -1,7 +1,7 @@
 package expressions;
 
 public class Sinus implements ArithmeticExpression {
-    private ArithmeticExpression base;
+    private final ArithmeticExpression base;
 
     private Sinus(ArithmeticExpression base) {
         this.base = base;

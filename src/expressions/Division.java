@@ -1,8 +1,8 @@
 package expressions;
 
 public class Division implements ArithmeticExpression {
-    private ArithmeticExpression left;
-    private ArithmeticExpression right;
+    private final ArithmeticExpression left;
+    private final ArithmeticExpression right;
 
     private Division(ArithmeticExpression left, ArithmeticExpression right) {
         this.left = left;

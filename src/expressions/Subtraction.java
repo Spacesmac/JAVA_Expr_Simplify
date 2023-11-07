@@ -3,8 +3,8 @@ package expressions;
 import java.math.BigDecimal;
 
 public class Subtraction implements ArithmeticExpression {
-    private ArithmeticExpression left;
-    private ArithmeticExpression right;
+    private final ArithmeticExpression left;
+    private final ArithmeticExpression right;
 
     private Subtraction(ArithmeticExpression left, ArithmeticExpression right) {
         this.left = left;

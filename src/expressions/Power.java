@@ -1,8 +1,8 @@
 package expressions;
 
 public class Power implements ArithmeticExpression {
-    private ArithmeticExpression base;
-    private ArithmeticExpression exponent;
+    private final ArithmeticExpression base;
+    private final ArithmeticExpression exponent;
 
     private Power(ArithmeticExpression base, ArithmeticExpression exponent) {
         this.base = base;

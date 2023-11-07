@@ -1,7 +1,7 @@
 package expressions;
 
 public class Variable implements ArithmeticExpression {
-    private String name;
+    private final String name;
     private double x_value;
 
     public String getName() {
@@ -22,9 +22,6 @@ public class Variable implements ArithmeticExpression {
         return x_value;
     }
 
-    public static ArithmeticExpression create(String name) {
-        return new Variable(name);
-    }
     public static ArithmeticExpression create(String name, double value) {
         return new Variable(name, value);
     }

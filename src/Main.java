@@ -2,7 +2,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             ExpressionParser parser = new ExpressionParser();
-            String expression = "sin(4+y*x^cos(cos(52)))";
+            String expression = "2(2x+4)";
 
             if (args.length > 0) {
                 expression = args[0];

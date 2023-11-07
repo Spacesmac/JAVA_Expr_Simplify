@@ -1,7 +1,7 @@
 package expressions;
 
 public class Cosinus implements ArithmeticExpression {
-    private ArithmeticExpression base;
+    private final ArithmeticExpression base;
 
     private Cosinus(ArithmeticExpression base) {
         this.base = base;
