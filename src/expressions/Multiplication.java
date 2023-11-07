@@ -106,8 +106,9 @@ public class Multiplication implements ArithmeticExpression {
                     + ((Variable) simpleRight).getX_value());
             return Power.create(simpleRight, NumericConstant.create(2));
         }
-        if (simpleLeft instanceof Multiplication leftmuMultiplication
+        if (simpleLeft instanceof Multiplication
                 && (cond.isNumeric(simpleRight) || cond.isVariable(simpleRight))) {
+            Multiplication leftmuMultiplication = (Multiplication) simpleLeft;
             return new Multiplication(leftmuMultiplication.getLeft(),
                     new Multiplication(leftmuMultiplication.getRight(), simpleRight));
         }
