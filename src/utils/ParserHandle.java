@@ -28,9 +28,9 @@ public class ParserHandle {
         return null;
     }
     
-    public void handleNumericConstant(String expression, boolean isNeg, Stack<ArithmeticExpression> operands) {
+    public void handleNumericConstant(String expression, Stack<ArithmeticExpression> operands) {
         double value = Double.parseDouble(expression);
-        operands.push(factory.createNumericConstant(isNeg ? -value : value));
+        operands.push(factory.createNumericConstant(value));
     }
 
     public void handleVariable(Stack<ArithmeticExpression> operands, char content) {
@@ -40,10 +40,12 @@ public class ParserHandle {
     public int handleIsNumber(int i, String  expression, Stack<ArithmeticExpression> operands, Stack<Character> operators, char content) {
         int j = i;
         boolean isNeg = (content == '-');
+        if (isNeg)
+            i++;
         while (i < expression.length() && (Character.isDigit(expression.charAt(i)) || expression.charAt(i) == '.')) {
             i++;
         }
-        handleNumericConstant(expression.substring(j, i), isNeg, operands);
+        handleNumericConstant(expression.substring(j, i), operands);
         i--;
         return i;
     }
@@ -74,10 +76,12 @@ public class ParserHandle {
             }
         }
         operators.pop();
-        char op = operators.peek();
-        if (op == 'c' || op == 's') {
-            operators.pop();
-            operands.push(factory.createFunction(op, operands.pop()));
+        if (!operators.isEmpty()) {
+            char op = operators.peek();
+            if (op == 'c' || op == 's') {
+                operators.pop();
+                operands.push(factory.createFunction(op, operands.pop()));
+            }
         }
     }
 

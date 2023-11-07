@@ -19,12 +19,14 @@ public class ExpressionParser {
 
         for (int i = 0; i < expression.length(); i++) {
             char content = expression.charAt(i);
-            if (Character.isDigit(content) || (content == '-' && i == 0 && i + 1 < expression.length())) {
+            
+            if (Character.isDigit(content) || (content == '-' && (i == 0 || ( i > 0 && OperatorPriority.isOperator(expression.charAt(i-1)))) && i + 1 < expression.length())) {
                 i = handler.handleIsNumber(i, expression, operands, operators, content);
             } else if (Character.isLetter(content)) {
                 i = handler.handleIsLetter(i, expression, operands, operators, content);
-            } else if (content == '(')
+            } else if (content == '(') {
                 operators.push(content);
+            }
             else if (content == ')')
                 handler.handleClosingParenthesis(operands, operators);
             else if (OperatorPriority.isOperator(content))

@@ -11,6 +11,7 @@ public class ExpressionUtils {
             expression = expression.replace("+-", "-");
             expression = expression.replace("-+", "-");
             expression = expression.replace("++", "+");
+            expression = expression.replace("*+", "*");
             if (expression.charAt(i) >= '0' && expression.charAt(i) <= '9' && i + 1 < expression.length()
                     && expression.charAt(i + 1) >= 'a' && expression.charAt(i + 1) <= 'z') {
                 expression = expression.replace("" + expression.charAt(i) +
@@ -19,9 +20,12 @@ public class ExpressionUtils {
                 i += 2;
                 continue;
             }
+            
+            if ((Character.isDigit(expression.charAt(i)) || Character.isLetter(expression.charAt(i))) && i + 1 < expression.length() && expression.charAt(i+1) == '(')
+                expression = expression.replace("" + expression.charAt(i)+expression.charAt(i+1), "" + expression.charAt(i)+'*'+expression.charAt(i+1));
             if (expression.charAt(i) >= 'a' && expression.charAt(i) <= 'z' && i + 3 < expression.length()
-                    && (expression.substring(i, i + 4).compareTo("cos(") == 0
-                            || expression.substring(i, i + 4).compareTo("sin(") == 0)) {
+            && (expression.substring(i, i + 4).compareTo("cos(") == 0
+            || expression.substring(i, i + 4).compareTo("sin(") == 0)) {
                 i += 3;
                 for (; i < expression.length() && (expression.charAt(i) == '(' || expression.charAt(i) == ')'
                         || Character.isDigit(expression.charAt(i))); i++) {
