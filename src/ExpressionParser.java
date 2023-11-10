@@ -12,6 +12,17 @@ public class ExpressionParser {
         this.handler = new ParserHandle();
     }
 
+    boolean isNegativeNumber(char content, String expression, int i)
+    {
+        if (content == '-' && i + 1 < expression.length()) {
+            if (i == 0 || OperatorPriority.isOperator(expression.charAt(i - 1)))
+                return true;
+            if (expression.charAt(i - 1) == '(' || expression.charAt(i - 1) == ')')
+                return true;
+        }
+        return false;
+    }
+
     public ArithmeticExpression parse(String expression) {
         Stack<ArithmeticExpression> operands = new Stack<>();
         Stack<Character> operators = new Stack<>();
@@ -20,7 +31,7 @@ public class ExpressionParser {
         for (int i = 0; i < expression.length(); i++) {
             char content = expression.charAt(i);
             
-            if (Character.isDigit(content) || content == '-' && (i == 0 || OperatorPriority.isOperator(expression.charAt(i - 1))) && i + 1 < expression.length()) {
+            if (Character.isDigit(content) || isNegativeNumber(content, expression, i)) {
                 i = handler.handleIsNumber(i, expression, operands, content);
             } else if (Character.isLetter(content)) {
                 i = handler.handleIsLetter(i, expression, operands, operators, content);
